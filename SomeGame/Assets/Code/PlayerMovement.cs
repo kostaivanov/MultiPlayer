@@ -92,8 +92,8 @@ internal class PlayerMovement : PlayerComponents
 
     private void LateUpdate()
     {
-        this.AnimationStateSwitch();
-        base.animator.SetInteger("state", (int)state);
+        //this.AnimationStateSwitch();
+        //base.animator.SetInteger("state", (int)state);
     }
 
     private float FindDirection()
@@ -109,64 +109,64 @@ internal class PlayerMovement : PlayerComponents
         return rayCastHit.collider != null;
     }
 
-    protected void AnimationStateSwitch()
-    {
+    //protected void AnimationStateSwitch()
+    //{
 
-        if (rigidBody.velocity.y > 1f && CheckIfGrounded() != true)
-        {
-            this.state = PlayerState.jumping;
-            //Debug.Log(PlayerState.jumping + " - skachame");
-        }
+    //    if (rigidBody.velocity.y > 1f && CheckIfGrounded() != true)
+    //    {
+    //        this.state = PlayerState.jumping;
+    //        //Debug.Log(PlayerState.jumping + " - skachame");
+    //    }
 
-        else if (animator.GetCurrentAnimatorStateInfo(0).IsName("Falling") && state == PlayerState.falling && collider2D.IsTouchingLayers(groundLayer))
-        {
-            state = PlayerState.landing;
-        }
+    //    else if (animator.GetCurrentAnimatorStateInfo(0).IsName("Falling") && state == PlayerState.falling && collider2D.IsTouchingLayers(groundLayer))
+    //    {
+    //        state = PlayerState.landing;
+    //    }
 
-        else if (state == PlayerState.jumping)
-        {
-            if (rigidBody.velocity.y == 0 || CheckIfGrounded() == true)
-            {
-                state = PlayerState.idle;
-                //Debug.Log(PlayerState.idle + " - idle sled skok");
-            }
-        }
+    //    else if (state == PlayerState.jumping)
+    //    {
+    //        if (rigidBody.velocity.y == 0 || CheckIfGrounded() == true)
+    //        {
+    //            state = PlayerState.idle;
+    //            //Debug.Log(PlayerState.idle + " - idle sled skok");
+    //        }
+    //    }
 
-        else if (state == PlayerState.jumping)
-        {
+    //    else if (state == PlayerState.jumping)
+    //    {
 
-            if (rigidBody.velocity.y < minimumFallingVelocity_Y)
-            {
-                state = PlayerState.falling;
-                //Debug.Log(PlayerState.falling + " - padame sled skok");
-            }
-        }
+    //        if (rigidBody.velocity.y < minimumFallingVelocity_Y)
+    //        {
+    //            state = PlayerState.falling;
+    //            //Debug.Log(PlayerState.falling + " - padame sled skok");
+    //        }
+    //    }
 
-        else if (state == PlayerState.falling)
-        {
-            if (collider2D.IsTouchingLayers(groundLayer))
-            {
-                state = PlayerState.idle;
-                //Debug.Log(PlayerState.idle + " - idle sled padane");
-            }
-        }
-        //&& Mathf.Abs(rigidBody.velocity.x) > minimumVelocity_X
-        else if (moving && CheckIfGrounded())
-        {
-            state = PlayerState.moving;
-            //Debug.Log(PlayerState.moving + " - bqgame");
-        }
+    //    else if (state == PlayerState.falling)
+    //    {
+    //        if (collider2D.IsTouchingLayers(groundLayer))
+    //        {
+    //            state = PlayerState.idle;
+    //            //Debug.Log(PlayerState.idle + " - idle sled padane");
+    //        }
+    //    }
+    //    //&& Mathf.Abs(rigidBody.velocity.x) > minimumVelocity_X
+    //    else if (moving && CheckIfGrounded())
+    //    {
+    //        state = PlayerState.moving;
+    //        //Debug.Log(PlayerState.moving + " - bqgame");
+    //    }
 
-        else
-        {
-            state = PlayerState.idle;
-            //Debug.Log(PlayerState.idle + " - stoim prosto");
-        }
+    //    else
+    //    {
+    //        state = PlayerState.idle;
+    //        //Debug.Log(PlayerState.idle + " - stoim prosto");
+    //    }
 
-        if (rigidBody.velocity.y < minimumFallingVelocity_Y)
-        {
-            state = PlayerState.falling;
-            //Debug.Log(PlayerState.falling + " - padame prosto");
-        }
-    }
+    //    if (rigidBody.velocity.y < minimumFallingVelocity_Y)
+    //    {
+    //        state = PlayerState.falling;
+    //        //Debug.Log(PlayerState.falling + " - padame prosto");
+    //    }
+    //}
 }

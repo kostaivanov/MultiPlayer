@@ -95,10 +95,10 @@ internal class PlayerJump : PlayerComponents
         return Mathf.Sqrt(2 * gravityStrength * jumpHeight);
     }
 
-    private void Jump(InputAction.CallbackContext obj)
+    public void Jump(InputAction.CallbackContext obj)
     {
         Debug.Log("Jump");
-        if (CheckIfGrounded())
+        if (obj.performed== true && CheckIfGrounded())
         {
             StartCoroutine(JumpProcess());
         }
