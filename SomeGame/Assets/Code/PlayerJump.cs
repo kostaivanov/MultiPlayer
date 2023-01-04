@@ -24,6 +24,9 @@ internal class PlayerJump : PlayerComponents
     private void Awake()
     {
         //control = new Control();
+        PlayerInputActions playerInputActions = new PlayerInputActions();
+        playerInputActions.Player.Enable();
+        playerInputActions.Player.Jump.performed += Jump;
     }
     
     private void OnEnable()
@@ -79,6 +82,15 @@ internal class PlayerJump : PlayerComponents
 
         }
     }
+    public void Jump(InputAction.CallbackContext context)
+    {
+        if (context.performed == true && CheckIfGrounded())
+        {
+            Debug.Log("Jump! " + context.phase);
+
+            StartCoroutine(JumpProcess());
+        }
+    }
 
     internal bool CheckIfGrounded()
     {
@@ -94,21 +106,12 @@ internal class PlayerJump : PlayerComponents
         //sqrt(2gh) = v
         return Mathf.Sqrt(2 * gravityStrength * jumpHeight);
     }
-
-    public void Jump(InputAction.CallbackContext obj)
-    {
-        Debug.Log("Jump");
-        if (obj.performed== true && CheckIfGrounded())
-        {
-            StartCoroutine(JumpProcess());
-        }
-    }
-
+  
     private IEnumerator JumpProcess()
     {
         jumpForce_2 = CalculateJumpForce(Physics2D.gravity.magnitude, jumpForce);
         //the initial jump
-        Debug.Log(jumpForce_2);
+        Debug.Log("Jump force = " + jumpForce_2);
         rigidBody.AddForce(Vector2.up * (jumpForce_2 * 2) * rigidBody.mass);
         yield return null;
 
