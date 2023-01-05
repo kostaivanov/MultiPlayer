@@ -20,7 +20,7 @@ internal class PlayerMovement : PlayerComponents
     private float direction;
 
     private bool canMove;
-
+    PlayerInputActions playerInputActions;
     //private Control control;
     //private InputAction movement;
 
@@ -35,6 +35,8 @@ internal class PlayerMovement : PlayerComponents
         //control = new Control();
         //control.Player.Movement.performed += context => direction = context.ReadValue<float>();
         //control.Player.Movement.canceled += context => direction = 0;
+        playerInputActions = new PlayerInputActions();
+        playerInputActions.Player.Enable();
     }
 
     private void OnEnable()
@@ -59,28 +61,33 @@ internal class PlayerMovement : PlayerComponents
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(direction);
-        if (direction != 0)
-        {
-            moving = true;
-            //direction = control.Player.Movement.ReadValue<float>();
-            //Debug.Log("control " + control.Player.Movement.ReadValue<float>());
-
-        }
-        //if (Input.GetAxisRaw("Horizontal") != 0 && CanMove == true)
+        //if (direction != 0)
         //{
-        //    direction = FindDirection();
         //    moving = true;
+        //    //direction = control.Player.Movement.ReadValue<float>();
+        //    //Debug.Log("control " + control.Player.Movement.ReadValue<float>());
+
         //}
-        else
-        {
-            moving = false;
-        }
+        ////if (Input.GetAxisRaw("Horizontal") != 0 && CanMove == true)
+        ////{
+        ////    direction = FindDirection();
+        ////    moving = true;
+        ////}
+        //else
+        //{
+        //    moving = false;
+        //}
 
     }
 
     private void FixedUpdate()
-    {
+    {     
+        if (playerInputActions.Player.Movement.IsPressed())
+        {
+            Vector2 inputVector = playerInputActions.Player.Movement.ReadValue<Vector2>();
+            rigidBody.AddForce(new Vector3(inputVector.x, inputVector.y, 0) * speed, ForceMode2D.Force);
+        }
+
         if (moving == true)
         {
             rigidBody.velocity = new Vector2(direction * speed, rigidBody.velocity.y);
