@@ -21,6 +21,7 @@ internal class PlayerMovement : PlayerComponents
 
     private bool canMove;
     PlayerInputActions playerInputActions;
+    private PlayerJump playerJump;
     //private Control control;
     //private InputAction movement;
 
@@ -37,6 +38,7 @@ internal class PlayerMovement : PlayerComponents
         //control.Player.Movement.canceled += context => direction = 0;
         playerInputActions = new PlayerInputActions();
         playerInputActions.Player.Enable();
+        playerJump = GetComponent<PlayerJump>();
     }
 
     private void OnEnable()
@@ -76,8 +78,9 @@ internal class PlayerMovement : PlayerComponents
         //else
         //{
         //    moving = false;
-        //}
-
+        //
+        Debug.Log("grounded = " + CheckIfGrounded());
+        Debug.DrawRay(base.collider2D.bounds.center, Vector2.down, Color.green, base.collider2D.bounds.size.y);
     }
 
     private void FixedUpdate()
@@ -87,6 +90,12 @@ internal class PlayerMovement : PlayerComponents
             Vector2 inputVector = playerInputActions.Player.Movement.ReadValue<Vector2>();
             rigidBody.AddForce(new Vector3(inputVector.x, inputVector.y, 0) * speed, ForceMode2D.Force);
             moving = true;
+        }
+        else if(playerJump.swimming == true && playerInputActions.Player.Swimming.IsPressed())
+        {
+            moving = false;
+            Vector2 inputVector = playerInputActions.Player.Movement.ReadValue<Vector2>();
+            rigidBody.AddForce(new Vector3(inputVector.x, inputVector.y, 0) * speed, ForceMode2D.Force);
         }
         else
         {
@@ -124,19 +133,28 @@ internal class PlayerMovement : PlayerComponents
     protected void AnimationStateSwitch()
     {
 
-        if (moving == true && CheckIfGrounded())
+        if (rigidBody.velocity.y > 1f && CheckIfGrounded() != true)
         {
-            state = PlayerState.moving;
-            //Debug.Log(PlayerState.moving + " - bqgame");
+            this.state = PlayerState.jumping;
+            //Debug.Log(PlayerState.jumping + " - skachame");
         }
-        else if(!CheckIfGrounded())
+        else if (state == PlayerState.jumping && playerJump.swimming == true)
         {
             state = PlayerState.swimming;
         }
+        else if (moving == true && CheckIfGrounded())
+        {
+            playerJump.swimming = false;
+            state = PlayerState.moving;
+        }
+
         else
         {
-            state = PlayerState.idle;
-            //Debug.Log(PlayerState.idle + " - stoim prosto");
+            if (CheckIfGrounded())
+            {
+                playerJump.swimming = false;
+                state = PlayerState.idle;
+            }
         }
     }
 }

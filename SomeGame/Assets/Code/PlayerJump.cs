@@ -13,7 +13,9 @@ internal class PlayerJump : PlayerComponents
     private float extrHeightText = 0.1f;
 
     private bool jumpPressed;
-    private bool jumpHolded;
+    //private bool jumpHolded;
+    private bool canDoubleJump = false;
+    internal bool swimming;
 
     public float fallMultiplier = 2.5f;
     public float lowJumpMultiplier = 2f;
@@ -49,6 +51,7 @@ internal class PlayerJump : PlayerComponents
     {
         base.Start();
         jumpPressed = false;
+        swimming = false;
     }
 
     // Update is called once per frame
@@ -87,8 +90,16 @@ internal class PlayerJump : PlayerComponents
         if (context.performed == true && CheckIfGrounded())
         {
             Debug.Log("Jump! " + context.phase);
-
+            canDoubleJump = true;
             StartCoroutine(JumpProcess());
+        }
+        else if(context.performed == true)
+        {
+            if (canDoubleJump == true)
+            {
+                canDoubleJump = false;
+                swimming = true;
+            }
         }
     }
 
