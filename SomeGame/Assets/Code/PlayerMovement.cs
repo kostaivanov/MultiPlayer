@@ -86,21 +86,26 @@ internal class PlayerMovement : PlayerComponents
         {
             Vector2 inputVector = playerInputActions.Player.Movement.ReadValue<Vector2>();
             rigidBody.AddForce(new Vector3(inputVector.x, inputVector.y, 0) * speed, ForceMode2D.Force);
+            moving = true;
+        }
+        else
+        {
+            moving = false;
         }
 
-        if (moving == true)
-        {
-            rigidBody.velocity = new Vector2(direction * speed, rigidBody.velocity.y);
-            this.transform.localScale = new Vector2(direction * 0.65f, 0.65f);
-            //rigidBody.MovePosition(rigidBody.position + new Vector2(direction * speed, 0) * Time.deltaTime);
-        }  
+        //if (moving == true)
+        //{
+        //    rigidBody.velocity = new Vector2(direction * speed, rigidBody.velocity.y);
+        //    this.transform.localScale = new Vector2(direction * 0.65f, 0.65f);
+        //    //rigidBody.MovePosition(rigidBody.position + new Vector2(direction * speed, 0) * Time.deltaTime);
+        //}  
     }
   
 
     private void LateUpdate()
     {
-        //this.AnimationStateSwitch();
-        //base.animator.SetInteger("state", (int)state);
+        this.AnimationStateSwitch();
+        base.animator.SetInteger("state", (int)state);
     }
 
     private float FindDirection()
@@ -116,64 +121,22 @@ internal class PlayerMovement : PlayerComponents
         return rayCastHit.collider != null;
     }
 
-    //protected void AnimationStateSwitch()
-    //{
+    protected void AnimationStateSwitch()
+    {
 
-    //    if (rigidBody.velocity.y > 1f && CheckIfGrounded() != true)
-    //    {
-    //        this.state = PlayerState.jumping;
-    //        //Debug.Log(PlayerState.jumping + " - skachame");
-    //    }
-
-    //    else if (animator.GetCurrentAnimatorStateInfo(0).IsName("Falling") && state == PlayerState.falling && collider2D.IsTouchingLayers(groundLayer))
-    //    {
-    //        state = PlayerState.landing;
-    //    }
-
-    //    else if (state == PlayerState.jumping)
-    //    {
-    //        if (rigidBody.velocity.y == 0 || CheckIfGrounded() == true)
-    //        {
-    //            state = PlayerState.idle;
-    //            //Debug.Log(PlayerState.idle + " - idle sled skok");
-    //        }
-    //    }
-
-    //    else if (state == PlayerState.jumping)
-    //    {
-
-    //        if (rigidBody.velocity.y < minimumFallingVelocity_Y)
-    //        {
-    //            state = PlayerState.falling;
-    //            //Debug.Log(PlayerState.falling + " - padame sled skok");
-    //        }
-    //    }
-
-    //    else if (state == PlayerState.falling)
-    //    {
-    //        if (collider2D.IsTouchingLayers(groundLayer))
-    //        {
-    //            state = PlayerState.idle;
-    //            //Debug.Log(PlayerState.idle + " - idle sled padane");
-    //        }
-    //    }
-    //    //&& Mathf.Abs(rigidBody.velocity.x) > minimumVelocity_X
-    //    else if (moving && CheckIfGrounded())
-    //    {
-    //        state = PlayerState.moving;
-    //        //Debug.Log(PlayerState.moving + " - bqgame");
-    //    }
-
-    //    else
-    //    {
-    //        state = PlayerState.idle;
-    //        //Debug.Log(PlayerState.idle + " - stoim prosto");
-    //    }
-
-    //    if (rigidBody.velocity.y < minimumFallingVelocity_Y)
-    //    {
-    //        state = PlayerState.falling;
-    //        //Debug.Log(PlayerState.falling + " - padame prosto");
-    //    }
-    //}
+        if (moving == true && CheckIfGrounded())
+        {
+            state = PlayerState.moving;
+            //Debug.Log(PlayerState.moving + " - bqgame");
+        }
+        else if(!CheckIfGrounded())
+        {
+            state = PlayerState.swimming;
+        }
+        else
+        {
+            state = PlayerState.idle;
+            //Debug.Log(PlayerState.idle + " - stoim prosto");
+        }
+    }
 }
