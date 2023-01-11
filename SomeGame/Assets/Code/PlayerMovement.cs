@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+[RequireComponent (typeof (BoxCollider2D))]
 internal class PlayerMovement : PlayerComponents
 {
     #region Constants
@@ -94,8 +95,9 @@ internal class PlayerMovement : PlayerComponents
         else if(playerJump.swimming == true && playerInputActions.Player.Swimming.IsPressed())
         {
             moving = false;
-            Vector2 inputVector = playerInputActions.Player.Movement.ReadValue<Vector2>();
+            Vector2 inputVector = playerInputActions.Player.Swimming.ReadValue<Vector2>();
             rigidBody.AddForce(new Vector3(inputVector.x, inputVector.y, 0) * speed, ForceMode2D.Force);
+            Debug.Log("playing");
         }
         else
         {
