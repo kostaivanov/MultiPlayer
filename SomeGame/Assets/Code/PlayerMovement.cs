@@ -12,10 +12,13 @@ internal class PlayerMovement : PlayerComponents
     private const float minimumFallingVelocity_Y = -2f;
     private const float groundCheckRadius = 0.1f;
     #endregion
+    private const float skinWidth = 0.025f;
+    [SerializeField] internal int verticalRayCount = 4;
+    private float verticalRaySpacing;
 
     [SerializeField] private float speed;
  
-    private float extrHeightText = 0.1f;
+    private float moveBoxDownValue = 0.1f;
 
     private bool moving;
     private float direction;
@@ -23,8 +26,32 @@ internal class PlayerMovement : PlayerComponents
     private bool canMove;
     PlayerInputActions playerInputActions;
     private PlayerJump playerJump;
+    RaycastOrigins raycastOrigings;
     //private Control control;
     //private InputAction movement;
+
+    struct RaycastOrigins
+    {
+        internal Vector2 bottomLeft, bottomRight;
+    }
+    private void UpdateRaycastOrigins()
+    {
+        Bounds bounds = base.collider2D.bounds;
+        bounds.Expand(skinWidth * -2);
+        raycastOrigings.bottomLeft = new Vector2(bounds.min.x, bounds.min.y);
+        raycastOrigings.bottomRight = new Vector2(bounds.max.x, bounds.min.y);
+
+    }
+
+    private void CalculateRaySpacing()
+    {
+        Bounds bounds = base.collider2D.bounds;
+        bounds.Expand(skinWidth * -2);
+
+        verticalRayCount = Math.Clamp(verticalRayCount, 2, int.MaxValue);
+
+        verticalRaySpacing = bounds.size.x / (verticalRayCount - 1);
+    }
 
     public bool CanMove
     {
@@ -64,24 +91,14 @@ internal class PlayerMovement : PlayerComponents
     // Update is called once per frame
     void Update()
     {
-        //if (direction != 0)
-        //{
-        //    moving = true;
-        //    //direction = control.Player.Movement.ReadValue<float>();
-        //    //Debug.Log("control " + control.Player.Movement.ReadValue<float>());
+        UpdateRaycastOrigins();
+        CalculateRaySpacing();
 
-        //}
-        ////if (Input.GetAxisRaw("Horizontal") != 0 && CanMove == true)
-        ////{
-        ////    direction = FindDirection();
-        ////    moving = true;
-        ////}
-        //else
-        //{
-        //    moving = false;
-        //
+        for (int i = 0; i < verticalRayCount; i++)
+        {
+            Debug.DrawRay(raycastOrigings.bottomLeft + Vector2.right * verticalRaySpacing * i, Vector2.up * -2, Color.red);
+        }
         Debug.Log("grounded = " + CheckIfGrounded());
-        Debug.DrawRay(base.collider2D.bounds.center, Vector2.down, Color.green, base.collider2D.bounds.size.y);
     }
 
     private void FixedUpdate()
@@ -117,17 +134,20 @@ internal class PlayerMovement : PlayerComponents
     {
         this.AnimationStateSwitch();
         base.animator.SetInteger("state", (int)state);
+        Debug.Log("State = " + state);
     }
 
-    private float FindDirection()
-    {
-        direction = Input.GetAxisRaw("Horizontal");
-        return direction;
-    }
+
+
+    //private float FindDirection()
+    //{
+    //    direction = Input.GetAxisRaw("Horizontal");
+    //    return direction;
+    //}
 
     internal bool CheckIfGrounded()
     {
-        RaycastHit2D rayCastHit = Physics2D.BoxCast(base.collider2D.bounds.center, base.collider2D.bounds.size, 0f, Vector2.down, extrHeightText, base.groundLayer);
+        RaycastHit2D rayCastHit = Physics2D.BoxCast(base.collider2D.bounds.center, base.collider2D.bounds.size, 0f, Vector2.down, moveBoxDownValue, base.groundLayer);
 
         return rayCastHit.collider != null;
     }

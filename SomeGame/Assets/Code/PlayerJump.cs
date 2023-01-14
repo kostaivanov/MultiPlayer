@@ -3,29 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+[RequireComponent (typeof (PlayerMovement))]
 internal class PlayerJump : PlayerComponents
 {
+    PlayerMovement playerMovement;
+
     [SerializeField] private float jumpForce;
     [SerializeField] private float decayRate;
 
     private float jumpForce_2;
 
-    private float extrHeightText = 0.1f;
-
     private bool jumpPressed;
-    //private bool jumpHolded;
     private bool canDoubleJump = false;
     internal bool swimming;
 
     public float fallMultiplier = 2.5f;
     public float lowJumpMultiplier = 2f;
 
-    //private Control control;
-    //private InputAction movement;
-
     private void Awake()
     {
-        //control = new Control();
         PlayerInputActions playerInputActions = new PlayerInputActions();
         playerInputActions.Player.Enable();
         playerInputActions.Player.Jump.performed += Jump;
@@ -33,23 +29,19 @@ internal class PlayerJump : PlayerComponents
     
     private void OnEnable()
     {
-        //movement = control.Player.Movement;
-        //movement.Enable();
 
-        //control.Player.Jump.performed += Jump;
-        //control.Player.Jump.Enable();
     }
 
     private void OnDisable()
     {
-        //movement.Disable();
-        //control.Player.Jump.Disable();
+
     }
 
     // Start is called before the first frame update
     protected override void Start()
     {
         base.Start();
+        playerMovement = GetComponent<PlayerMovement>();
         jumpPressed = false;
         swimming = false;
     }
@@ -57,17 +49,6 @@ internal class PlayerJump : PlayerComponents
     // Update is called once per frame
     void Update()
     {
-
-        //if (Input.GetButtonDown("Jump") && CheckIfGrounded())
-        //{
-        //    jumpPressed = true;
-        //    jumpHolded = true;
-        //}
-        //else if (Input.GetButtonUp("Jump"))
-        //{
-        //    jumpHolded = false;
-
-        //}
 
     }
 
@@ -79,7 +60,7 @@ internal class PlayerJump : PlayerComponents
 
             jumpPressed = false;
         }
-        if (!CheckIfGrounded())
+        if (!playerMovement.CheckIfGrounded())
         {
             jumpPressed = false;
 
@@ -87,7 +68,7 @@ internal class PlayerJump : PlayerComponents
     }
     public void Jump(InputAction.CallbackContext context)
     {
-        if (context.performed == true && CheckIfGrounded())
+        if (context.performed == true && playerMovement.CheckIfGrounded())
         {
             Debug.Log("Jump! " + context.phase);
             canDoubleJump = true;
@@ -101,13 +82,6 @@ internal class PlayerJump : PlayerComponents
                 swimming = true;
             }
         }
-    }
-
-    internal bool CheckIfGrounded()
-    {
-        RaycastHit2D rayCastHit = Physics2D.BoxCast(base.collider2D.bounds.center, base.collider2D.bounds.size, 0f, Vector2.down, extrHeightText, base.groundLayer);
-
-        return rayCastHit.collider != null;
     }
 
     public static float CalculateJumpForce(float gravityStrength, float jumpHeight)
