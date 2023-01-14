@@ -20,6 +20,8 @@ internal class PlayerMovement : PlayerComponents
  
     private float moveBoxDownValue = 0.1f;
 
+    private float gravity = -20;
+    private Vector3 velocity;
     private bool moving;
     private float direction;
 
@@ -84,15 +86,18 @@ internal class PlayerMovement : PlayerComponents
     {
         base.Start();
         moving = false;
-
         CanMove = true;
+        CalculateRaySpacing();
     }
 
     // Update is called once per frame
     void Update()
     {
-        UpdateRaycastOrigins();
-        CalculateRaySpacing();
+
+
+
+        velocity.y += gravity * Time.deltaTime;
+        MoveBody(velocity * Time.deltaTime);
 
         for (int i = 0; i < verticalRayCount; i++)
         {
@@ -106,15 +111,14 @@ internal class PlayerMovement : PlayerComponents
         if (playerInputActions.Player.Movement.IsPressed())
         {
             Vector2 inputVector = playerInputActions.Player.Movement.ReadValue<Vector2>();
-            rigidBody.AddForce(new Vector3(inputVector.x, inputVector.y, 0) * speed, ForceMode2D.Force);
+            MoveBody(inputVector);
             moving = true;
         }
         else if(playerJump.swimming == true && playerInputActions.Player.Swimming.IsPressed())
         {
             moving = false;
             Vector2 inputVector = playerInputActions.Player.Swimming.ReadValue<Vector2>();
-            rigidBody.AddForce(new Vector3(inputVector.x, inputVector.y, 0) * speed, ForceMode2D.Force);
-            Debug.Log("playing");
+            MoveBody(inputVector);
         }
         else
         {
@@ -128,7 +132,14 @@ internal class PlayerMovement : PlayerComponents
         //    //rigidBody.MovePosition(rigidBody.position + new Vector2(direction * speed, 0) * Time.deltaTime);
         //}  
     }
-  
+
+    private void MoveBody(Vector2 inputVector)
+    {
+        UpdateRaycastOrigins();
+
+        //rigidBody.AddForce(new Vector3(inputVector.x, inputVector.y, 0) * speed, ForceMode2D.Force);
+        transform.Translate(inputVector);
+    }
 
     private void LateUpdate()
     {
