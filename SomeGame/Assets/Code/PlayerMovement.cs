@@ -96,14 +96,11 @@ internal class PlayerMovement : PlayerComponents
 
 
 
-        velocity.y += gravity * Time.deltaTime;
-        MoveBody(velocity * Time.deltaTime);
+        //velocity.x += gravity * Time.deltaTime;
+        //MoveBody(velocity * Time.deltaTime);
 
-        for (int i = 0; i < verticalRayCount; i++)
-        {
-            Debug.DrawRay(raycastOrigings.bottomLeft + Vector2.right * verticalRaySpacing * i, Vector2.up * -2, Color.red);
-        }
-        Debug.Log("grounded = " + CheckIfGrounded());
+
+        //Debug.Log("grounded = " + CheckIfGrounded());
     }
 
     private void FixedUpdate()
@@ -131,6 +128,16 @@ internal class PlayerMovement : PlayerComponents
         //    this.transform.localScale = new Vector2(direction * 0.65f, 0.65f);
         //    //rigidBody.MovePosition(rigidBody.position + new Vector2(direction * speed, 0) * Time.deltaTime);
         //}  
+    }
+
+    private void VerticalCollisions(ref Vector3 velocity)
+    {
+        float directionX = Math.Sign(velocity.x);
+        float rayLength = Math.Abs(velocity.y) + skinWidth;
+        for (int i = 0; i < verticalRayCount; i++)
+        {
+            Debug.DrawRay(raycastOrigings.bottomLeft + Vector2.right * verticalRaySpacing * i, Vector2.up * -2, Color.red);
+        }
     }
 
     private void MoveBody(Vector2 inputVector)
