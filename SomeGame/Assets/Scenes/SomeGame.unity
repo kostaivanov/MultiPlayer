@@ -1188,7 +1188,7 @@ GameObject:
   - component: {fileID: 266038762}
   - component: {fileID: 266038763}
   m_Layer: 0
-  m_Name: Player
+  m_Name: Bell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1222,6 +1222,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a82a3f09f980194882fc8a2e10b1663, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  verticalRayCount: 4
   speed: 100
 --- !u!114 &266038757
 MonoBehaviour:
@@ -1268,6 +1269,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: dd6d44d8-b60f-4e26-990c-8f41652d1998
     m_ActionName: Player/Movement[/Keyboard/a,/Keyboard/d]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 6ed6636b-f298-494e-aa65-6d6062045920
+    m_ActionName: Player/Swimming[/Keyboard/a,/Keyboard/d,/Keyboard/w,/Keyboard/s]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
