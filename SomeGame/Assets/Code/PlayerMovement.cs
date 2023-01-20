@@ -144,8 +144,8 @@ internal class PlayerMovement : PlayerComponents
     {
         UpdateRaycastOrigins();
 
-        //rigidBody.AddForce(new Vector3(inputVector.x, inputVector.y, 0) * speed, ForceMode2D.Force);
-        transform.Translate(inputVector);
+        rigidBody.AddForce(new Vector3(inputVector.x, inputVector.y, 0) * speed, ForceMode2D.Force);
+        //transform.Translate(inputVector);
     }
 
     private void LateUpdate()

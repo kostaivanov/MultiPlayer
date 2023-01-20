@@ -1223,7 +1223,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   verticalRayCount: 4
-  speed: 100
+  speed: 75
 --- !u!114 &266038757
 MonoBehaviour:
   m_ObjectHideFlags: 0
