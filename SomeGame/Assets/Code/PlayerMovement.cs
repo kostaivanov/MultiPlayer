@@ -17,7 +17,7 @@ internal class PlayerMovement : PlayerComponents
     private float verticalRaySpacing;
 
     [SerializeField] private float speed;
- 
+    [SerializeField] private LayerMask ground;
     private float moveBoxDownValue = 0.1f;
 
     private float gravity = -20;
@@ -31,30 +31,12 @@ internal class PlayerMovement : PlayerComponents
     RaycastOrigins raycastOrigings;
     //private Control control;
     //private InputAction movement;
-
+    bool grounded = false;
     struct RaycastOrigins
     {
         internal Vector2 bottomLeft, bottomRight;
     }
-    private void UpdateRaycastOrigins()
-    {
-        Bounds bounds = base.collider2D.bounds;
-        bounds.Expand(skinWidth * -2);
-        raycastOrigings.bottomLeft = new Vector2(bounds.min.x, bounds.min.y);
-        raycastOrigings.bottomRight = new Vector2(bounds.max.x, bounds.min.y);
-
-    }
-
-    private void CalculateRaySpacing()
-    {
-        Bounds bounds = base.collider2D.bounds;
-        bounds.Expand(skinWidth * -2);
-
-        verticalRayCount = Math.Clamp(verticalRayCount, 2, int.MaxValue);
-
-        verticalRaySpacing = bounds.size.x / (verticalRayCount - 1);
-    }
-
+   
     public bool CanMove
     {
         get { return canMove; }
@@ -93,8 +75,8 @@ internal class PlayerMovement : PlayerComponents
     // Update is called once per frame
     void Update()
     {
-
-
+        VerticalCollisions();
+        Debug.Log(grounded);
 
         //velocity.x += gravity * Time.deltaTime;
         //MoveBody(velocity * Time.deltaTime);
@@ -129,21 +111,48 @@ internal class PlayerMovement : PlayerComponents
         //    //rigidBody.MovePosition(rigidBody.position + new Vector2(direction * speed, 0) * Time.deltaTime);
         //}  
     }
-
-    private void VerticalCollisions(ref Vector3 velocity)
+    private void UpdateRaycastOrigins()
     {
-        float directionX = Math.Sign(velocity.x);
-        float rayLength = Math.Abs(velocity.y) + skinWidth;
+        Bounds bounds = base.collider2D.bounds;
+        bounds.Expand(skinWidth * -2);
+        raycastOrigings.bottomLeft = new Vector2(bounds.min.x, bounds.min.y);
+        raycastOrigings.bottomRight = new Vector2(bounds.max.x, bounds.min.y);
+
+    }
+
+    private void CalculateRaySpacing()
+    {
+        Bounds bounds = base.collider2D.bounds;
+        bounds.Expand(skinWidth * -2);
+        Debug.Log(bounds);
+        verticalRayCount = Math.Clamp(verticalRayCount, 2, int.MaxValue);
+
+        verticalRaySpacing = bounds.size.x / (verticalRayCount - 1);
+    }
+
+    private bool VerticalCollisions()
+    {
+        //float directionY = Math.Sign(velocity.y);
+        //float rayLength = Math.Abs(velocity.y) + skinWidth;
+        //Debug.Log("raylength = " + rayLength);
+
         for (int i = 0; i < verticalRayCount; i++)
         {
+            Vector2 rayOrigin = raycastOrigings.bottomLeft;
+            rayOrigin += Vector2.right * (verticalRaySpacing * i + velocity.x);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, -Vector2.up, skinWidth, ground);
+
+            grounded = hit;
+
             Debug.DrawRay(raycastOrigings.bottomLeft + Vector2.right * verticalRaySpacing * i, Vector2.up * -2, Color.red);
         }
+        return grounded;
     }
 
     private void MoveBody(Vector2 inputVector)
     {
         UpdateRaycastOrigins();
-
+        VerticalCollisions();
         rigidBody.AddForce(new Vector3(inputVector.x, inputVector.y, 0) * speed, ForceMode2D.Force);
         //transform.Translate(inputVector);
     }
