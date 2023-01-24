@@ -60,7 +60,7 @@ internal class PlayerJump : PlayerComponents
 
             jumpPressed = false;
         }
-        if (!playerMovement.CheckIfGrounded())
+        if (!playerMovement.grounded)
         {
             jumpPressed = false;
 
@@ -68,7 +68,8 @@ internal class PlayerJump : PlayerComponents
     }
     public void Jump(InputAction.CallbackContext context)
     {
-        if (context.performed == true && playerMovement.CheckIfGrounded())
+        //playerMovement.UpdateRaycastOrigins();
+        if (context.performed == true && playerMovement.grounded)
         {
             Debug.Log("Jump! " + context.phase);
             canDoubleJump = true;
