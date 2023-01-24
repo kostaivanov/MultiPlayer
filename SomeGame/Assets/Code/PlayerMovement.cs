@@ -28,10 +28,9 @@ internal class PlayerMovement : PlayerComponents
     PlayerInputActions playerInputActions;
     private PlayerJump playerJump;
     RaycastOrigins raycastOrigings;
-    //private Control control;
-    //private InputAction movement;
-    internal bool grounded = false;
 
+    internal bool grounded = false;
+    private Vector2 inputVector;
     struct RaycastOrigins
     {
         internal Vector2 bottomLeft, bottomRight;
@@ -45,9 +44,6 @@ internal class PlayerMovement : PlayerComponents
 
     private void Awake()
     {
-        //control = new Control();
-        //control.Player.Movement.performed += context => direction = context.ReadValue<float>();
-        //control.Player.Movement.canceled += context => direction = 0;
         playerInputActions = new PlayerInputActions();
         playerInputActions.Player.Enable();
         playerJump = GetComponent<PlayerJump>();
@@ -59,37 +55,45 @@ internal class PlayerMovement : PlayerComponents
         base.Start();
         moving = false;
         CanMove = true;
-        //CalculateRaySpacing();
     }
 
     // Update is called once per frame
     void Update()
     {
-        //UpdateRaycastOrigins();
+        
         grounded = Physics2D.OverlapArea(new Vector2(collider2D.bounds.center.x - collider2D.bounds.extents.x, collider2D.bounds.center.y - collider2D.bounds.extents.y),
             new Vector2(collider2D.bounds.center.x + collider2D.bounds.extents.x, collider2D.bounds.center.y - (collider2D.bounds.extents.y + 0.1f)), groundLayer);
-        Debug.Log("grounded = " + grounded);
-    }
 
-    private void FixedUpdate()
-    {
+
         if (playerInputActions.Player.Movement.IsPressed())
         {
-            Vector2 inputVector = playerInputActions.Player.Movement.ReadValue<Vector2>();
-            MoveBody(inputVector);
+            inputVector = playerInputActions.Player.Movement.ReadValue<Vector2>();
+            //MoveBody(inputVector);
             moving = true;
         }
         else if (playerJump.swimming == true && playerInputActions.Player.Swimming.IsPressed())
         {
             moving = false;
-            Vector2 inputVector = playerInputActions.Player.Swimming.ReadValue<Vector2>();
-            MoveBody(inputVector);
+            inputVector = playerInputActions.Player.Swimming.ReadValue<Vector2>();
+            //MoveBody(inputVector);
         }
         else
         {
             moving = false;
         }
 
+        if (moving == true)
+        {
+            MoveBody(inputVector);
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        //if (moving == true)
+        //{
+        //    MoveBody(inputVector);
+        //}
 
         //if (moving == true)
         //{
@@ -113,16 +117,14 @@ internal class PlayerMovement : PlayerComponents
             Gizmos.color = new Color(1, 0, 1, 0.5f);
             Gizmos.DrawCube(new Vector2(collider2D.bounds.center.x, collider2D.bounds.center.y - (collider2D.bounds.extents.y + 0.005f)), new Vector2(collider2D.bounds.size.x, 0.05f));
         }
-
     }
 
 
     private void MoveBody(Vector2 inputVector)
     {
-        //UpdateRaycastOrigins();
-
-        rigidBody.AddForce(new Vector3(inputVector.x, inputVector.y, 0) * speed, ForceMode2D.Force);
-        //transform.Translate(inputVector);
+       // rigidBody.AddForce(new Vector3(inputVector.x, inputVector.y, 0) * speed, ForceMode2D.Force);
+        this.transform.localScale = new Vector2(inputVector.x, 1);
+        transform.Translate(inputVector * (Time.deltaTime * speed));
     }
 
     private void LateUpdate()
