@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent (typeof (BoxCollider2D))]
+[RequireComponent(typeof(BoxCollider2D))]
 internal class PlayerMovement : PlayerComponents
 {
     #region Constants
@@ -18,7 +18,6 @@ internal class PlayerMovement : PlayerComponents
 
     [SerializeField] private float speed;
     [SerializeField] private LayerMask ground;
-    private float moveBoxDownValue = 0.1f;
 
     private float gravity = -20;
     private Vector3 velocity;
@@ -31,12 +30,13 @@ internal class PlayerMovement : PlayerComponents
     RaycastOrigins raycastOrigings;
     //private Control control;
     //private InputAction movement;
-    bool grounded = false;
+    internal bool grounded = false;
+
     struct RaycastOrigins
     {
         internal Vector2 bottomLeft, bottomRight;
     }
-   
+
     public bool CanMove
     {
         get { return canMove; }
@@ -53,47 +53,33 @@ internal class PlayerMovement : PlayerComponents
         playerJump = GetComponent<PlayerJump>();
     }
 
-    private void OnEnable()
-    {
-        //control.Player.Enable();
-    }
-
-    private void OnDisable()
-    {
-        //control.Player.Disable();
-    }
-
     // Start is called before the first frame update
     protected override void Start()
     {
         base.Start();
         moving = false;
         CanMove = true;
-        CalculateRaySpacing();
+        //CalculateRaySpacing();
     }
 
     // Update is called once per frame
     void Update()
     {
-        VerticalCollisions();
-        Debug.Log(grounded);
-
-        //velocity.x += gravity * Time.deltaTime;
-        //MoveBody(velocity * Time.deltaTime);
-
-
-        //Debug.Log("grounded = " + CheckIfGrounded());
+        //UpdateRaycastOrigins();
+        grounded = Physics2D.OverlapArea(new Vector2(collider2D.bounds.center.x - collider2D.bounds.extents.x, collider2D.bounds.center.y - collider2D.bounds.extents.y),
+            new Vector2(collider2D.bounds.center.x + collider2D.bounds.extents.x, collider2D.bounds.center.y - (collider2D.bounds.extents.y + 0.1f)), groundLayer);
+        Debug.Log("grounded = " + grounded);
     }
 
     private void FixedUpdate()
-    {     
+    {
         if (playerInputActions.Player.Movement.IsPressed())
         {
             Vector2 inputVector = playerInputActions.Player.Movement.ReadValue<Vector2>();
             MoveBody(inputVector);
             moving = true;
         }
-        else if(playerJump.swimming == true && playerInputActions.Player.Swimming.IsPressed())
+        else if (playerJump.swimming == true && playerInputActions.Player.Swimming.IsPressed())
         {
             moving = false;
             Vector2 inputVector = playerInputActions.Player.Swimming.ReadValue<Vector2>();
@@ -104,6 +90,7 @@ internal class PlayerMovement : PlayerComponents
             moving = false;
         }
 
+
         //if (moving == true)
         //{
         //    rigidBody.velocity = new Vector2(direction * speed, rigidBody.velocity.y);
@@ -111,48 +98,29 @@ internal class PlayerMovement : PlayerComponents
         //    //rigidBody.MovePosition(rigidBody.position + new Vector2(direction * speed, 0) * Time.deltaTime);
         //}  
     }
-    private void UpdateRaycastOrigins()
+    //internal void UpdateRaycastOrigins()
+    //{
+    //    Bounds bounds = base.collider2D.bounds;
+    //    bounds.Expand(skinWidth * -5);
+    //    raycastOrigings.bottomLeft = new Vector2(bounds.min.x, bounds.min.y);
+    //    raycastOrigings.bottomRight = new Vector2(bounds.max.x, bounds.min.y);
+    //}
+
+    private void OnDrawGizmos()
     {
-        Bounds bounds = base.collider2D.bounds;
-        bounds.Expand(skinWidth * -2);
-        raycastOrigings.bottomLeft = new Vector2(bounds.min.x, bounds.min.y);
-        raycastOrigings.bottomRight = new Vector2(bounds.max.x, bounds.min.y);
-
-    }
-
-    private void CalculateRaySpacing()
-    {
-        Bounds bounds = base.collider2D.bounds;
-        bounds.Expand(skinWidth * -2);
-        Debug.Log(bounds);
-        verticalRayCount = Math.Clamp(verticalRayCount, 2, int.MaxValue);
-
-        verticalRaySpacing = bounds.size.x / (verticalRayCount - 1);
-    }
-
-    private bool VerticalCollisions()
-    {
-        //float directionY = Math.Sign(velocity.y);
-        //float rayLength = Math.Abs(velocity.y) + skinWidth;
-        //Debug.Log("raylength = " + rayLength);
-
-        for (int i = 0; i < verticalRayCount; i++)
+        if (collider2D != null)
         {
-            Vector2 rayOrigin = raycastOrigings.bottomLeft;
-            rayOrigin += Vector2.right * (verticalRaySpacing * i + velocity.x);
-            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, -Vector2.up, skinWidth, ground);
-
-            grounded = hit;
-
-            Debug.DrawRay(raycastOrigings.bottomLeft + Vector2.right * verticalRaySpacing * i, Vector2.up * -2, Color.red);
+            Gizmos.color = new Color(1, 0, 1, 0.5f);
+            Gizmos.DrawCube(new Vector2(collider2D.bounds.center.x, collider2D.bounds.center.y - (collider2D.bounds.extents.y + 0.005f)), new Vector2(collider2D.bounds.size.x, 0.05f));
         }
-        return grounded;
+
     }
+
 
     private void MoveBody(Vector2 inputVector)
     {
-        UpdateRaycastOrigins();
-        VerticalCollisions();
+        //UpdateRaycastOrigins();
+
         rigidBody.AddForce(new Vector3(inputVector.x, inputVector.y, 0) * speed, ForceMode2D.Force);
         //transform.Translate(inputVector);
     }
@@ -164,25 +132,10 @@ internal class PlayerMovement : PlayerComponents
         Debug.Log("State = " + state);
     }
 
-
-
-    //private float FindDirection()
-    //{
-    //    direction = Input.GetAxisRaw("Horizontal");
-    //    return direction;
-    //}
-
-    internal bool CheckIfGrounded()
-    {
-        RaycastHit2D rayCastHit = Physics2D.BoxCast(base.collider2D.bounds.center, base.collider2D.bounds.size, 0f, Vector2.down, moveBoxDownValue, base.groundLayer);
-
-        return rayCastHit.collider != null;
-    }
-
     protected void AnimationStateSwitch()
     {
 
-        if (rigidBody.velocity.y > 1f && CheckIfGrounded() != true)
+        if (rigidBody.velocity.y > 1f && grounded != true)
         {
             this.state = PlayerState.jumping;
             //Debug.Log(PlayerState.jumping + " - skachame");
@@ -191,7 +144,7 @@ internal class PlayerMovement : PlayerComponents
         {
             state = PlayerState.swimming;
         }
-        else if (moving == true && CheckIfGrounded())
+        else if (moving == true && grounded)
         {
             playerJump.swimming = false;
             state = PlayerState.moving;
@@ -199,7 +152,7 @@ internal class PlayerMovement : PlayerComponents
 
         else
         {
-            if (CheckIfGrounded())
+            if (grounded)
             {
                 playerJump.swimming = false;
                 state = PlayerState.idle;
