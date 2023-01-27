@@ -60,7 +60,7 @@ internal class PlayerMovement : PlayerComponents
     // Update is called once per frame
     void Update()
     {
-        
+
         grounded = Physics2D.OverlapArea(new Vector2(collider2D.bounds.center.x - collider2D.bounds.extents.x, collider2D.bounds.center.y - collider2D.bounds.extents.y),
             new Vector2(collider2D.bounds.center.x + collider2D.bounds.extents.x, collider2D.bounds.center.y - (collider2D.bounds.extents.y + 0.1f)), groundLayer);
 
@@ -82,18 +82,15 @@ internal class PlayerMovement : PlayerComponents
             moving = false;
         }
 
-        if (moving == true)
-        {
-            MoveBody(inputVector);
-        }
+      
     }
 
     private void FixedUpdate()
     {
-        //if (moving == true)
-        //{
-        //    MoveBody(inputVector);
-        //}
+        if (moving == true)
+        {
+            MoveBody(inputVector);
+        }
 
         //if (moving == true)
         //{
@@ -122,9 +119,10 @@ internal class PlayerMovement : PlayerComponents
 
     private void MoveBody(Vector2 inputVector)
     {
-       // rigidBody.AddForce(new Vector3(inputVector.x, inputVector.y, 0) * speed, ForceMode2D.Force);
+
         this.transform.localScale = new Vector2(inputVector.x, 1);
-        transform.Translate(inputVector * (Time.deltaTime * speed));
+        rigidBody.AddForce(new Vector3(inputVector.x, inputVector.y, 0) * speed, ForceMode2D.Impulse);
+        //transform.Translate(inputVector * (Time.deltaTime * speed));
     }
 
     private void LateUpdate()
