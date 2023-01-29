@@ -60,7 +60,6 @@ internal class PlayerMovement : PlayerComponents
     // Update is called once per frame
     void Update()
     {
-
         grounded = Physics2D.OverlapArea(new Vector2(collider2D.bounds.center.x - collider2D.bounds.extents.x, collider2D.bounds.center.y - collider2D.bounds.extents.y),
             new Vector2(collider2D.bounds.center.x + collider2D.bounds.extents.x, collider2D.bounds.center.y - (collider2D.bounds.extents.y + 0.1f)), groundLayer);
 
@@ -129,7 +128,7 @@ internal class PlayerMovement : PlayerComponents
     {
         this.AnimationStateSwitch();
         base.animator.SetInteger("state", (int)state);
-        Debug.Log("State = " + state);
+        //Debug.Log("State = " + state);
     }
 
     protected void AnimationStateSwitch()

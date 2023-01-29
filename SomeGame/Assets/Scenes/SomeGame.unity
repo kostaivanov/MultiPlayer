@@ -984,10 +984,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74c9a5a59de2dcf438f1181ca240cf7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpHeight: 6
-  gravityScale: 5
-  fallGravityScale: 20
-  buttonPressTime: 0
+  jumpHeight: 60
+  jumpTime: 0.4
+  fallMultiplier: 12
+  jumpMultiplier: 3
 --- !u!114 &266038756
 MonoBehaviour:
   m_ObjectHideFlags: 0

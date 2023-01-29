@@ -8,38 +8,32 @@ internal class PlayerJump : PlayerComponents
 {
     PlayerMovement playerMovement;
 
-    //[SerializeField] private float jumpForce;
-    //[SerializeField] private float decayRate;
-    //private float jumpForce_2;
-
-    //[SerializeField] private float fallMultiplier = 2.5f;
-    //[SerializeField] private float lowJumpMultiplier = 2f;
-
     [SerializeField] private float jumpHeight;
-    [SerializeField] private float gravityScale;
-    [SerializeField] private float fallGravityScale;
-    private bool jumping;
-    private float buttonPressedTime;
-    [SerializeField] private float buttonPressTime;
-    private float jumpTime;
-    //private float jumpVelocity;
+    [SerializeField] private float jumpTime;
+    [SerializeField] private float fallMultiplier;
+    [SerializeField] private float jumpMultiplier;
 
-    //private bool jumpPressed;
+    private bool isJumping;
+    private float jumpCounter;
+    private Vector2 vecGravity;
 
     private bool canDoubleJump = false;
     internal bool swimming;
+    private bool jumpCanceled;
 
     private void Awake()
     {
         PlayerInputActions playerInputActions = new PlayerInputActions();
         playerInputActions.Player.Enable();
         playerInputActions.Player.Jump.performed += Jump;
+        jumpCanceled = false;
     }
 
     // Start is called before the first frame update
     protected override void Start()
     {
         base.Start();
+        vecGravity = new Vector2(0, -Physics2D.gravity.y);
         playerMovement = GetComponent<PlayerMovement>();
 
         //jumpPressed = false;
@@ -49,66 +43,76 @@ internal class PlayerJump : PlayerComponents
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(rigidBody.gravityScale);
-        if (jumping == true)
+        Debug.Log(rigidBody.velocity.y);
+
+        if (rigidBody.velocity.y > 0 && isJumping == true)
         {
-            jumpTime += Time.deltaTime;
+            jumpCounter += Time.deltaTime;
+            if (jumpCounter > jumpTime)
+            {
+                isJumping = false;
+            }
+            float t = jumpCounter / jumpTime;
+            float currentJumpM = jumpMultiplier;
+
+            if (t > 0.5f)
+            {
+                currentJumpM = jumpMultiplier * (1 - t);
+            }
+            rigidBody.velocity += vecGravity * currentJumpM * Time.deltaTime;
+        }
+
+        if (rigidBody.velocity.y < 0)
+        {
+            rigidBody.velocity -= vecGravity * fallMultiplier * Time.deltaTime;
+            Debug.Log("???????");
+        }
+
+        if (jumpCanceled == true)
+        {
+            isJumping = false;
+            jumpCounter = 0;
+            if (rigidBody.velocity.y > 0)
+            {
+                rigidBody.velocity = new Vector2(rigidBody.velocity.x, rigidBody.velocity.y * 0.6f);
+            }
         }
     }
 
     private void FixedUpdate()
     {
-        //if (jumpPressed == true)
-        //{
 
-        //    jumpPressed = false;
-        //}       
-
-        //if (!playerMovement.grounded)
-        //{
-        //    jumpPressed = false;
-        //}
     }
     public void Jump(InputAction.CallbackContext context)
     {
         if (context.performed == true && playerMovement.grounded)
         {
-            jumping = true;
-            jumpTime = 0;
-
+            jumpCanceled = false;
             canDoubleJump = true;
-            rigidBody.gravityScale = gravityScale;
-            float jumpForce = Mathf.Sqrt(jumpHeight * (Physics2D.gravity.y * rigidBody.gravityScale) * -2) * rigidBody.mass;
-            rigidBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-            jumping = true;
-            buttonPressedTime = 0;
 
+            //rigidBody.gravityScale = gravityScale;
+            //float jumpForce = Mathf.Sqrt(jumpHeight * -2 * (Physics2D.gravity.y * rigidBody.gravityScale));
+            //rigidBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            rigidBody.velocity = new Vector2(rigidBody.velocity.x, jumpHeight);
+            isJumping = true;
+            jumpCounter = 0;
+            Debug.Log("Jump!");
             //StartCoroutine(JumpProcess());
         }
         else if (context.performed == true)
         {
             if (canDoubleJump == true)
             {
+                Debug.Log("Double jump!");
                 canDoubleJump = false;
                 swimming = true;
             }
         }
 
-        if (jumping == true)
-        {
-            buttonPressedTime += Time.deltaTime;
-
-            if (buttonPressedTime < buttonPressTime && context.canceled)
-            {
-                // cancel the jump
-                rigidBody.gravityScale = fallGravityScale;
-            }
-
-            if (rigidBody.velocity.y < 0)
-            {
-                rigidBody.gravityScale = fallGravityScale;
-                jumping = false;
-            }
+        if (context.canceled == true)
+        { 
+            jumpCanceled = true;
+            Debug.Log("Canceled jump!");
         }
         //if (rigidBody.velocity.y > 0)
         //{
