@@ -43,8 +43,6 @@ internal class PlayerJump : PlayerComponents
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(rigidBody.velocity.y);
-
         if (rigidBody.velocity.y > 0 && isJumping == true)
         {
             jumpCounter += Time.deltaTime;

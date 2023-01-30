@@ -7,7 +7,8 @@ internal enum PlayerState
     idle,
     moving,
     swimming,
-    jumping
+    jumping,
+    stopping
     //falling,
     //landing
 }
