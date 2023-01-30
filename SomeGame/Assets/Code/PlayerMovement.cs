@@ -12,22 +12,22 @@ internal class PlayerMovement : PlayerComponents
     private const float minimumFallingVelocity_Y = -2f;
     private const float groundCheckRadius = 0.1f;
     #endregion
-    private const float skinWidth = 0.025f;
+    //private const float skinWidth = 0.025f;
     [SerializeField] internal int verticalRayCount = 4;
-    private float verticalRaySpacing;
+    //private float verticalRaySpacing;
 
     [SerializeField] private float speed;
     [SerializeField] private LayerMask ground;
 
-    private float gravity = -20;
-    private Vector3 velocity;
-    private bool moving;
-    private float direction;
+    //private float gravity = -20;
+    //private Vector3 velocity;
+    internal bool moving;
+    //private float direction;
 
     private bool canMove;
     PlayerInputActions playerInputActions;
     private PlayerJump playerJump;
-    RaycastOrigins raycastOrigings;
+    //RaycastOrigins raycastOrigings;
 
     internal bool grounded = false;
     private Vector2 inputVector;
@@ -124,12 +124,12 @@ internal class PlayerMovement : PlayerComponents
         //transform.Translate(inputVector * (Time.deltaTime * speed));
     }
 
-    private void LateUpdate()
-    {
-        this.AnimationStateSwitch();
-        base.animator.SetInteger("state", (int)state);
-        //Debug.Log("State = " + state);
-    }
+    //private void LateUpdate()
+    //{
+    //    this.AnimationStateSwitch();
+    //    base.animator.SetInteger("state", (int)state);
+    //    //Debug.Log("State = " + state);
+    //}
 
     protected void AnimationStateSwitch()
     {
