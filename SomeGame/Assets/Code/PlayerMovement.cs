@@ -50,7 +50,7 @@ internal class PlayerMovement : PlayerComponents
     }
 
     // Start is called before the first frame update
-    protected override void Start()
+    internal override void Start()
     {
         base.Start();
         moving = false;

@@ -4,7 +4,8 @@ internal class PlayerIdleState : PlayerBaseState
 {
     internal override void EnterState(PlayerStateManager player)
     {
-
+        player.animator.Play("IDLE");
+        Debug.Log("Playing animation IDLE!");
     }
 
     internal override void UpdateState(PlayerStateManager player)

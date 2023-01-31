@@ -30,7 +30,7 @@ internal class PlayerJump : PlayerComponents
     }
 
     // Start is called before the first frame update
-    protected override void Start()
+    internal override void Start()
     {
         base.Start();
         vecGravity = new Vector2(0, -Physics2D.gravity.y);
@@ -63,7 +63,7 @@ internal class PlayerJump : PlayerComponents
         if (rigidBody.velocity.y < 0)
         {
             rigidBody.velocity -= vecGravity * fallMultiplier * Time.deltaTime;
-            Debug.Log("???????");
+            //Debug.Log("???????");
         }
 
         if (jumpCanceled == true)

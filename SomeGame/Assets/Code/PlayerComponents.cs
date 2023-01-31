@@ -5,19 +5,19 @@ using UnityEngine;
 internal abstract class PlayerComponents : MonoBehaviour
 {
     #region Unity Components
-    protected Rigidbody2D rigidBody;
-    protected Collider2D collider2D;
-    protected Animator animator;
+    internal Rigidbody2D rigidBody;
+    internal Collider2D collider2D;
+    internal Animator animator;
     //protected PlayerMovement playerMovement;
     //protected PlayerHealth playerHealth;
-    protected SpriteRenderer playerSprite;
+    internal SpriteRenderer playerSprite;
     #endregion
 
     internal LayerMask groundLayer;
     internal PlayerState state = PlayerState.idle;
 
     // Start is called before the first frame update
-    protected virtual void Start()
+    internal virtual void Start()
     {
         rigidBody = GetComponent<Rigidbody2D>();
         collider2D = GetComponent<Collider2D>();
