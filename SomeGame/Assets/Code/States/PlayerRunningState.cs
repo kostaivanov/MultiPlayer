@@ -4,8 +4,8 @@ internal class PlayerRunningState : PlayerBaseState
 {
     internal override void EnterState(PlayerStateManager player)
     {
-        player.animator.Play("Base Layer.Running", 0, 0.25f);
-        Debug.Log("Playing animation running!");
+        player.animator.Play("Running");
+        Debug.Log($"Playing animation Running!");
     }
 
     internal override void UpdateState(PlayerStateManager player)

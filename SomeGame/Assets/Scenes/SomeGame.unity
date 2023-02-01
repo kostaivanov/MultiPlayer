@@ -943,6 +943,7 @@ GameObject:
   - component: {fileID: 266038762}
   - component: {fileID: 266038763}
   - component: {fileID: 266038764}
+  - component: {fileID: 266038765}
   m_Layer: 0
   m_Name: Bell
   m_TagString: Untagged
@@ -1195,6 +1196,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fa9626d6973e8845a8628a7865aa76d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!111 &266038765
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 266038754}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 161733877d781fd4cbbd93903d6a9992, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: d2373e80f9ee1d348bd572a84f88230f, type: 2}
+  - {fileID: 7400000, guid: 161733877d781fd4cbbd93903d6a9992, type: 2}
+  - {fileID: 7400000, guid: 0ab9d5e9d689c4d4bb1aa415eaddf191, type: 2}
+  - {fileID: 7400000, guid: 879dc9788d2ae1547bb8f5ba3963306d, type: 2}
+  - {fileID: 7400000, guid: 2d5c9d6536088634b99ed622e3af6ee4, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &270420185
 GameObject:
   m_ObjectHideFlags: 0

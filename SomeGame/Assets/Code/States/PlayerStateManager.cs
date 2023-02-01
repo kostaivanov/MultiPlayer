@@ -11,11 +11,15 @@ internal class PlayerStateManager : PlayerComponents
     internal PlayerSwimmingState swimmingState = new PlayerSwimmingState();
     internal PlayerJumpingState jumpingState = new PlayerJumpingState();
     internal PlayerStoppingState stoppingState = new PlayerStoppingState();
+    internal Animation animation;
 
     // Start is called before the first frame update
     internal override void Start()
     {
         base.Start();
+        //AnimationClip[] arrclip = animator.runtimeAnimatorController.animationClips;
+        animation = GetComponent<Animation>();
+
         playerMovement = GetComponent<PlayerMovement>();
         currentState = idleState;
 
@@ -26,7 +30,7 @@ internal class PlayerStateManager : PlayerComponents
     void Update()
     {
         currentState.UpdateState(this);
-        Debug.Log(currentState);
+        //Debug.Log(currentState);
     }
 
     internal void SwitchState(PlayerBaseState state)

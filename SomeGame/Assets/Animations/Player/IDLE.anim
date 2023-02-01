@@ -8,7 +8,7 @@ AnimationClip:
   m_PrefabAsset: {fileID: 0}
   m_Name: IDLE
   serializedVersion: 6
-  m_Legacy: 0
+  m_Legacy: 1
   m_Compressed: 0
   m_UseHighQualityCurve: 1
   m_RotationCurves: []
@@ -41,21 +41,8 @@ AnimationClip:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
   m_ClipBindingConstant:
-    genericBindings:
-    - serializedVersion: 2
-      path: 0
-      attribute: 0
-      script: {fileID: 0}
-      typeID: 212
-      customType: 23
-      isPPtrCurve: 1
-    pptrCurveMapping:
-    - {fileID: 21300000, guid: 611a671b49b9e0442b251a0d2ed55c96, type: 3}
-    - {fileID: 21300000, guid: 2507874de5427f249a08ef86333a9e1a, type: 3}
-    - {fileID: 21300000, guid: 5c189c7d4a3491240b6b5cd5e4afcb55, type: 3}
-    - {fileID: 21300000, guid: 8001b810e4bf8a74a9253af20548f48f, type: 3}
-    - {fileID: 21300000, guid: 5c189c7d4a3491240b6b5cd5e4afcb55, type: 3}
-    - {fileID: 21300000, guid: 2507874de5427f249a08ef86333a9e1a, type: 3}
+    genericBindings: []
+    pptrCurveMapping: []
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
