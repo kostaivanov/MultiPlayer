@@ -12,7 +12,12 @@ internal class PlayerRunningState : PlayerBaseState
     {
         if (player.rigidBody.velocity.x == 0 && player.playerMovement.grounded == true)
         {
-            player.SwitchState(player.idleState);
+            player.SwitchState(player.stoppingState);
+        }
+
+        if (player.rigidBody.velocity.y > 1f && player.playerMovement.grounded != true)
+        {
+            player.SwitchState(player.jumpingState);
         }
     }
 

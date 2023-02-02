@@ -5,6 +5,8 @@ using UnityEngine;
 internal class PlayerStateManager : PlayerComponents
 {
     internal PlayerMovement playerMovement;
+    internal PlayerJump playerJump;
+
     internal PlayerBaseState currentState;
     internal PlayerIdleState idleState = new PlayerIdleState();
     internal PlayerRunningState runningState = new PlayerRunningState();
@@ -21,6 +23,8 @@ internal class PlayerStateManager : PlayerComponents
         animation = GetComponent<Animation>();
 
         playerMovement = GetComponent<PlayerMovement>();
+        playerJump = GetComponent<PlayerJump>();
+
         currentState = idleState;
 
         currentState.EnterState(this);

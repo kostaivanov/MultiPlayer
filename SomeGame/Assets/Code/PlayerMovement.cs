@@ -25,7 +25,7 @@ internal class PlayerMovement : PlayerComponents
     //private float direction;
 
     private bool canMove;
-    PlayerInputActions playerInputActions;
+    internal PlayerInputActions playerInputActions;
     private PlayerJump playerJump;
     //RaycastOrigins raycastOrigings;
 
@@ -131,31 +131,31 @@ internal class PlayerMovement : PlayerComponents
     //    //Debug.Log("State = " + state);
     //}
 
-    protected void AnimationStateSwitch()
-    {
+    //protected void AnimationStateSwitch()
+    //{
 
-        if (rigidBody.velocity.y > 1f && grounded != true)
-        {
-            this.state = PlayerState.jumping;
-            //Debug.Log(PlayerState.jumping + " - skachame");
-        }
-        else if (state == PlayerState.jumping && playerJump.swimming == true)
-        {
-            state = PlayerState.swimming;
-        }
-        else if (moving == true && grounded)
-        {
-            playerJump.swimming = false;
-            state = PlayerState.moving;
-        }
+    //    if (rigidBody.velocity.y > 1f && grounded != true)
+    //    {
+    //        this.state = PlayerState.jumping;
+    //        //Debug.Log(PlayerState.jumping + " - skachame");
+    //    }
+    //    else if (state == PlayerState.jumping && playerJump.swimming == true)
+    //    {
+    //        state = PlayerState.swimming;
+    //    }
+    //    else if (moving == true && grounded)
+    //    {
+    //        playerJump.swimming = false;
+    //        state = PlayerState.moving;
+    //    }
 
-        else
-        {
-            if (grounded)
-            {
-                playerJump.swimming = false;
-                state = PlayerState.idle;
-            }
-        }
-    }
+    //    else
+    //    {
+    //        if (grounded)
+    //        {
+    //            playerJump.swimming = false;
+    //            state = PlayerState.idle;
+    //        }
+    //    }
+    //}
 }

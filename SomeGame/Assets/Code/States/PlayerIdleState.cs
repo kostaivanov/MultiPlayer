@@ -14,6 +14,10 @@ internal class PlayerIdleState : PlayerBaseState
         {
             player.SwitchState(player.runningState);
         }
+        if (player.rigidBody.velocity.y > 1f && player.playerMovement.grounded != true)
+        {
+            player.SwitchState(player.jumpingState);
+        }
     }
 
     internal override void OnCollisionEnter(PlayerStateManager player)
