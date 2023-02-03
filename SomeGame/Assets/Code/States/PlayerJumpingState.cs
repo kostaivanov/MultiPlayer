@@ -19,7 +19,7 @@ internal class PlayerJumpingState : PlayerBaseState
     }
     internal override void OnCollisionEnter(PlayerStateManager player)
     {
-        
+
     }
 
 

@@ -8,14 +8,18 @@ internal class PlayerStoppingState : PlayerBaseState
     }
     internal override void UpdateState(PlayerStateManager player)
     {
-        if (!player.playerMovement.playerInputActions.Player.Movement.IsPressed() && player.rigidBody.velocity.x == 0 && player.playerMovement.grounded == true)
+        if (player.rigidBody.velocity.x == 0 && player.playerMovement.grounded == true)
         {
             player.SwitchState(player.idleState);
+        }
+        else if (player.playerMovement.moving == true && player.playerMovement.grounded == true)
+        {
+            player.SwitchState(player.runningState);
         }
     }
     internal override void OnCollisionEnter(PlayerStateManager player)
     {
-        
+
     }
 
 
