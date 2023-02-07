@@ -5,7 +5,7 @@ internal class PlayerRunningState : PlayerBaseState
     internal override void EnterState(PlayerStateManager player)
     {
         player.animator.Play("Running");
-        Debug.Log($"Playing animation Running!");
+        //Debug.Log($"Playing animation Running!");
     }
 
     internal override void UpdateState(PlayerStateManager player)

@@ -24,8 +24,8 @@ internal class PlayerJump : PlayerComponents
     private void Awake()
     {
         PlayerInputActions playerInputActions = new PlayerInputActions();
-        playerInputActions.Player.Enable();
-        playerInputActions.Player.Jump.performed += Jump;
+        playerInputActions.PlayerGround.Enable();
+        playerInputActions.PlayerGround.Jump.performed += Jump;
         jumpCanceled = false;
     }
 

@@ -25,9 +25,15 @@ internal class PlayerMovement : PlayerComponents
     //private float direction;
 
     private bool canMove;
+    internal PlayerInput playerInput;
+
     internal PlayerInputActions playerInputActions;
     private PlayerJump playerJump;
+    private PlayerStateManager playerStateManager;
     //RaycastOrigins raycastOrigings;
+
+    private InputActionMap playerGround;
+    private InputActionMap playerWater;
 
     internal bool grounded = false;
     private Vector2 inputVector;
@@ -45,8 +51,14 @@ internal class PlayerMovement : PlayerComponents
     private void Awake()
     {
         playerInputActions = new PlayerInputActions();
-        playerInputActions.Player.Enable();
+        playerInputActions.Enable();
+
+        playerInput = new PlayerInput();
+
         playerJump = GetComponent<PlayerJump>();
+        playerStateManager = GetComponent<PlayerStateManager>();
+        //playerGround = playerInput.actions.FindActionMap("PlayerGround");
+        //playerWater = playerInput.actions.FindActionMap("PlayerWater");
     }
 
     // Start is called before the first frame update
@@ -63,23 +75,56 @@ internal class PlayerMovement : PlayerComponents
         grounded = Physics2D.OverlapArea(new Vector2(collider2D.bounds.center.x - collider2D.bounds.extents.x, collider2D.bounds.center.y - collider2D.bounds.extents.y),
             new Vector2(collider2D.bounds.center.x + collider2D.bounds.extents.x, collider2D.bounds.center.y - (collider2D.bounds.extents.y + 0.1f)), groundLayer);
 
-
-        if (playerInputActions.Player.Movement.IsPressed())
+        if (grounded == true && playerJump.swimming == false)
         {
-            inputVector = playerInputActions.Player.Movement.ReadValue<Vector2>();
+            inputVector = playerInputActions.PlayerGround.Movement.ReadValue<Vector2>();
+            //playerInput.SwitchCurrentActionMap("PlayerGround");
+            playerInputActions.PlayerGround.Enable();
+            playerInputActions.PlayerWater.Disable();
+            //playerGround.Enable();
+            //playerWater.Disable();
+
             //MoveBody(inputVector);
             moving = true;
+            Debug.Log("Running playing");
         }
-        else if (playerJump.swimming == true && playerInputActions.Player.Swimming.IsPressed())
+        else if(grounded == false && playerJump.swimming == true)
         {
-            moving = false;
-            inputVector = playerInputActions.Player.Swimming.ReadValue<Vector2>();
+            inputVector = playerInputActions.PlayerWater.Swimming.ReadValue<Vector2>();
+            //playerInput.SwitchCurrentActionMap("PlayerWater");
+
+            playerInputActions.PlayerGround.Disable();
+            playerInputActions.PlayerWater.Enable();
+
+            //playerWater.Enable();
+            //playerGround.Disable();
+
             //MoveBody(inputVector);
+            moving = false;
+            Debug.Log("Running playing");
         }
         else
         {
             moving = false;
         }
+        //if (playerInputActions.PlayerGround.Movement.IsPressed() && playerJump.swimming == false)
+        //{
+        //    inputVector = playerInputActions.PlayerGround.Movement.ReadValue<Vector2>();
+        //    //MoveBody(inputVector);
+        //    moving = true;
+        //    Debug.Log("Running playing");
+        //}
+        //else if (playerJump.swimming == true && playerInputActions.PlayerWater.Swimming.IsPressed())
+        //{
+        //    moving = false;
+        //    inputVector = playerInputActions.PlayerWater.Swimming.ReadValue<Vector2>();
+        //    //MoveBody(inputVector);
+        //    Debug.Log("Swimming playing");
+        //}
+        //else
+        //{
+        //    moving = false;
+        //}
 
       
     }

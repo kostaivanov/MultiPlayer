@@ -2,9 +2,12 @@ using UnityEngine;
 
 internal class PlayerSwimmingState : PlayerBaseState
 {
+    private float initialGravity;
     internal override void EnterState(PlayerStateManager player)
     {
         player.animator.Play("Swimming");
+        initialGravity = player.rigidBody.gravityScale;
+        player.rigidBody.gravityScale = 0;
     }
 
     internal override void UpdateState(PlayerStateManager player)
@@ -13,6 +16,7 @@ internal class PlayerSwimmingState : PlayerBaseState
         {
             player.playerJump.swimming = false;
             player.SwitchState(player.runningState);
+            player.rigidBody.gravityScale = initialGravity;
         }
 
         else if(player.playerMovement.grounded == true)

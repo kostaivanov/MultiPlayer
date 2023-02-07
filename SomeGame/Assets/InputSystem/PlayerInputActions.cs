@@ -24,7 +24,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     ""name"": ""PlayerInputActions"",
     ""maps"": [
         {
-            ""name"": ""Player"",
+            ""name"": ""PlayerGround"",
             ""id"": ""4f92d461-926a-4c23-b433-262350b60c0f"",
             ""actions"": [
                 {
@@ -40,15 +40,6 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""name"": ""Movement"",
                     ""type"": ""Value"",
                     ""id"": ""dd6d44d8-b60f-4e26-990c-8f41652d1998"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
-                },
-                {
-                    ""name"": ""Swimming"",
-                    ""type"": ""Value"",
-                    ""id"": ""6ed6636b-f298-494e-aa65-6d6062045920"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -99,10 +90,27 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
-                },
+                }
+            ]
+        },
+        {
+            ""name"": ""PlayerWater"",
+            ""id"": ""afc7d8aa-c309-4a7e-9faa-def25a986495"",
+            ""actions"": [
+                {
+                    ""name"": ""Swimming"",
+                    ""type"": ""Value"",
+                    ""id"": ""7cd6d755-75a1-44ef-9992-30747399a488"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                }
+            ],
+            ""bindings"": [
                 {
                     ""name"": ""2D Vector"",
-                    ""id"": ""42c2017c-b5bb-4ea8-aba0-6a8b29b1b4c4"",
+                    ""id"": ""377bd0ec-97d0-468b-8546-abf882923e42"",
                     ""path"": ""2DVector"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -112,30 +120,8 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""left"",
-                    ""id"": ""d35f0c3e-fb8e-41dd-9c90-cd6cddf563fe"",
-                    ""path"": ""<Keyboard>/a"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard"",
-                    ""action"": ""Swimming"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""right"",
-                    ""id"": ""5b4756d1-738b-4b20-81da-8c38126b8740"",
-                    ""path"": ""<Keyboard>/d"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard"",
-                    ""action"": ""Swimming"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
                     ""name"": ""up"",
-                    ""id"": ""bb449beb-8bc7-40a9-9bfe-c42884609a26"",
+                    ""id"": ""78bb3550-e741-4d69-8035-6d13413fdb4f"",
                     ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -146,8 +132,30 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""down"",
-                    ""id"": ""73c2e1cb-e4e7-4671-aba0-769bc945e318"",
+                    ""id"": ""52acfc97-5e67-4453-ac5b-c86ad762c235"",
                     ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Swimming"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""db047f85-000a-4bff-a3b0-0e0bf7852114"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Swimming"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""e641b7de-4daa-4a11-9c04-9475e32706db"",
+                    ""path"": ""<Keyboard>/d"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
@@ -172,11 +180,13 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         }
     ]
 }");
-        // Player
-        m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
-        m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
-        m_Player_Movement = m_Player.FindAction("Movement", throwIfNotFound: true);
-        m_Player_Swimming = m_Player.FindAction("Swimming", throwIfNotFound: true);
+        // PlayerGround
+        m_PlayerGround = asset.FindActionMap("PlayerGround", throwIfNotFound: true);
+        m_PlayerGround_Jump = m_PlayerGround.FindAction("Jump", throwIfNotFound: true);
+        m_PlayerGround_Movement = m_PlayerGround.FindAction("Movement", throwIfNotFound: true);
+        // PlayerWater
+        m_PlayerWater = asset.FindActionMap("PlayerWater", throwIfNotFound: true);
+        m_PlayerWater_Swimming = m_PlayerWater.FindAction("Swimming", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -233,39 +243,34 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         return asset.FindBinding(bindingMask, out action);
     }
 
-    // Player
-    private readonly InputActionMap m_Player;
-    private IPlayerActions m_PlayerActionsCallbackInterface;
-    private readonly InputAction m_Player_Jump;
-    private readonly InputAction m_Player_Movement;
-    private readonly InputAction m_Player_Swimming;
-    public struct PlayerActions
+    // PlayerGround
+    private readonly InputActionMap m_PlayerGround;
+    private IPlayerGroundActions m_PlayerGroundActionsCallbackInterface;
+    private readonly InputAction m_PlayerGround_Jump;
+    private readonly InputAction m_PlayerGround_Movement;
+    public struct PlayerGroundActions
     {
         private @PlayerInputActions m_Wrapper;
-        public PlayerActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Jump => m_Wrapper.m_Player_Jump;
-        public InputAction @Movement => m_Wrapper.m_Player_Movement;
-        public InputAction @Swimming => m_Wrapper.m_Player_Swimming;
-        public InputActionMap Get() { return m_Wrapper.m_Player; }
+        public PlayerGroundActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Jump => m_Wrapper.m_PlayerGround_Jump;
+        public InputAction @Movement => m_Wrapper.m_PlayerGround_Movement;
+        public InputActionMap Get() { return m_Wrapper.m_PlayerGround; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(PlayerActions set) { return set.Get(); }
-        public void SetCallbacks(IPlayerActions instance)
+        public static implicit operator InputActionMap(PlayerGroundActions set) { return set.Get(); }
+        public void SetCallbacks(IPlayerGroundActions instance)
         {
-            if (m_Wrapper.m_PlayerActionsCallbackInterface != null)
+            if (m_Wrapper.m_PlayerGroundActionsCallbackInterface != null)
             {
-                @Jump.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
-                @Jump.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
-                @Jump.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
-                @Movement.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMovement;
-                @Movement.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMovement;
-                @Movement.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMovement;
-                @Swimming.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwimming;
-                @Swimming.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwimming;
-                @Swimming.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwimming;
+                @Jump.started -= m_Wrapper.m_PlayerGroundActionsCallbackInterface.OnJump;
+                @Jump.performed -= m_Wrapper.m_PlayerGroundActionsCallbackInterface.OnJump;
+                @Jump.canceled -= m_Wrapper.m_PlayerGroundActionsCallbackInterface.OnJump;
+                @Movement.started -= m_Wrapper.m_PlayerGroundActionsCallbackInterface.OnMovement;
+                @Movement.performed -= m_Wrapper.m_PlayerGroundActionsCallbackInterface.OnMovement;
+                @Movement.canceled -= m_Wrapper.m_PlayerGroundActionsCallbackInterface.OnMovement;
             }
-            m_Wrapper.m_PlayerActionsCallbackInterface = instance;
+            m_Wrapper.m_PlayerGroundActionsCallbackInterface = instance;
             if (instance != null)
             {
                 @Jump.started += instance.OnJump;
@@ -274,13 +279,43 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @Movement.started += instance.OnMovement;
                 @Movement.performed += instance.OnMovement;
                 @Movement.canceled += instance.OnMovement;
+            }
+        }
+    }
+    public PlayerGroundActions @PlayerGround => new PlayerGroundActions(this);
+
+    // PlayerWater
+    private readonly InputActionMap m_PlayerWater;
+    private IPlayerWaterActions m_PlayerWaterActionsCallbackInterface;
+    private readonly InputAction m_PlayerWater_Swimming;
+    public struct PlayerWaterActions
+    {
+        private @PlayerInputActions m_Wrapper;
+        public PlayerWaterActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Swimming => m_Wrapper.m_PlayerWater_Swimming;
+        public InputActionMap Get() { return m_Wrapper.m_PlayerWater; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(PlayerWaterActions set) { return set.Get(); }
+        public void SetCallbacks(IPlayerWaterActions instance)
+        {
+            if (m_Wrapper.m_PlayerWaterActionsCallbackInterface != null)
+            {
+                @Swimming.started -= m_Wrapper.m_PlayerWaterActionsCallbackInterface.OnSwimming;
+                @Swimming.performed -= m_Wrapper.m_PlayerWaterActionsCallbackInterface.OnSwimming;
+                @Swimming.canceled -= m_Wrapper.m_PlayerWaterActionsCallbackInterface.OnSwimming;
+            }
+            m_Wrapper.m_PlayerWaterActionsCallbackInterface = instance;
+            if (instance != null)
+            {
                 @Swimming.started += instance.OnSwimming;
                 @Swimming.performed += instance.OnSwimming;
                 @Swimming.canceled += instance.OnSwimming;
             }
         }
     }
-    public PlayerActions @Player => new PlayerActions(this);
+    public PlayerWaterActions @PlayerWater => new PlayerWaterActions(this);
     private int m_KeyboardSchemeIndex = -1;
     public InputControlScheme KeyboardScheme
     {
@@ -290,10 +325,13 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
             return asset.controlSchemes[m_KeyboardSchemeIndex];
         }
     }
-    public interface IPlayerActions
+    public interface IPlayerGroundActions
     {
         void OnJump(InputAction.CallbackContext context);
         void OnMovement(InputAction.CallbackContext context);
+    }
+    public interface IPlayerWaterActions
+    {
         void OnSwimming(InputAction.CallbackContext context);
     }
 }
