@@ -104,6 +104,10 @@ internal class PlayerJump : PlayerComponents
                 Debug.Log("Double jump!");
                 canDoubleJump = false;
                 swimming = true;
+                rigidBody.gravityScale += -2.25f;
+                vecGravity.y = -2.25f;
+                fallMultiplier = 0;
+                Debug.Log("Does this work?");
             }
         }
 
