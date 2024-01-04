@@ -8,11 +8,11 @@ internal class PlayerJumpingState : PlayerBaseState
     }
     internal override void UpdateState(PlayerStateManager player)
     {
-        if (player.playerJump.swimming == true)
+        if (player.playerMovement.swimming == true)
         {
             player.SwitchState(player.swimmingState);
         }
-        if (player.rigidBody.velocity.y == 0 || player.playerMovement.grounded == true)
+        if (player.playerMovement.velocity.y == 0 || player.playerMovement.controller2D.collisions.below == true)
         {
             player.SwitchState(player.idleState);
         }

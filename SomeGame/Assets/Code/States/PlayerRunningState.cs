@@ -15,12 +15,12 @@ internal class PlayerRunningState : PlayerBaseState
         //    player.SwitchState(player.stoppingState);
         //}
 
-        if (player.playerMovement.moving == false && player.playerMovement.grounded == true)
+        if (player.playerMovement.CanMove == false && player.playerMovement.controller2D.collisions.below == true)
         {
             player.SwitchState(player.stoppingState);
         }
 
-        if (player.rigidBody.velocity.y > 1f && player.playerMovement.grounded != true)
+        if (player.playerMovement.velocity.y > 1f && player.playerMovement.controller2D.collisions.below != true)
         {
             player.SwitchState(player.jumpingState);
         }

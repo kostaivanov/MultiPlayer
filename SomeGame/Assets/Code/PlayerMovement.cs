@@ -4,211 +4,152 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(BoxCollider2D))]
+[RequireComponent(typeof(Controller2D))]
 internal class PlayerMovement : PlayerComponents
 {
-    #region Constants
-    private const float minimumVelocity_X = 0.5f;
-    private const float minimumFallingVelocity_Y = -2f;
-    private const float groundCheckRadius = 0.1f;
+    internal Vector2 inputVector;
+    private float timeSinceJumpPressed = 0f;
+    #region Jump variables
+    [SerializeField] float timeToJumpApex = .4f;
+    [SerializeField] float jumpApexHeight = 14;
+    [SerializeField] float jumpCancelHeight = 2;
+    [SerializeField] internal float jumpHeight = 8;
+
+    private float jumpVelocity;
+    internal float gravity;
+
+    internal bool swimming;
+    internal bool doubleJump;
+    private bool jumpCanceled;
+    private bool isJumping;
     #endregion
-    //private const float skinWidth = 0.025f;
-    [SerializeField] internal int verticalRayCount = 4;
-    //private float verticalRaySpacing;
 
-    [SerializeField] private float speed;
-    [SerializeField] private LayerMask ground;
+    #region Movement variables
 
-    //private float gravity = -20;
-    //private Vector3 velocity;
-    internal bool moving;
-    //private float direction;
+    [SerializeField] internal float moveSpeed = 16;
+    float accelerationTimeAirborne = 0.2f;
+    float accelerationTimeGrounded = 0.005f;
+    internal Vector3 velocity;
+
+    float velocityXSmoothing;
 
     private bool canMove;
-    internal PlayerInput playerInput;
+    #endregion
+    //private float jumpGravity;
 
+    private bool canDoubleJump = false;
+
+
+
+
+
+    #region Input actions
+    [SerializeField] private InputActionReference jumpAction;
+    //internal PlayerInput playerInput;
     internal PlayerInputActions playerInputActions;
-    private PlayerJump playerJump;
-    private PlayerStateManager playerStateManager;
-    //RaycastOrigins raycastOrigings;
-
     private InputActionMap playerGround;
     private InputActionMap playerWater;
+    #endregion
 
-    internal bool grounded = false;
-    private Vector2 inputVector;
-    struct RaycastOrigins
-    {
-        internal Vector2 bottomLeft, bottomRight;
-    }
+    private PlayerStateManager playerStateManager;
+    internal Controller2D controller2D;
 
-    public bool CanMove
-    {
-        get { return canMove; }
-        set { canMove = value; }
-    }
 
     private void Awake()
     {
         playerInputActions = new PlayerInputActions();
         playerInputActions.Enable();
-
-        playerInput = GetComponent<PlayerInput>();
-
-        playerJump = GetComponent<PlayerJump>();
+        //playerInput = GetComponent<PlayerInput>();
+        playerInputActions.PlayerGround.Enable();
         playerStateManager = GetComponent<PlayerStateManager>();
         //playerGround = playerInput.actions.FindActionMap("PlayerGround");
         //playerWater = playerInput.actions.FindActionMap("PlayerWater");
+    }
+    internal bool CanMove
+    {
+        get { return canMove; }
+        set { canMove = value; }
     }
 
     // Start is called before the first frame update
     internal override void Start()
     {
         base.Start();
-        moving = false;
-        CanMove = true;
+        controller2D = GetComponent<Controller2D>();
         playerInputActions.PlayerWater.Disable();
+        CalculateGravityAndInitialVelocity();
+        canMove = false;
+    }
+    private void CalculateGravityAndInitialVelocity()
+    {
+        gravity = -(2 * jumpHeight) / Mathf.Pow(timeToJumpApex, 2);
+        jumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
+        print("Gravity: " + gravity + "  Jump Velocity: " + jumpVelocity);
     }
 
-    // Update is called once per frame
     void Update()
     {
-        grounded = Physics2D.OverlapArea(new Vector2(collider2D.bounds.center.x - collider2D.bounds.extents.x, collider2D.bounds.center.y - collider2D.bounds.extents.y),
-            new Vector2(collider2D.bounds.center.x + collider2D.bounds.extents.x, collider2D.bounds.center.y - (collider2D.bounds.extents.y + 0.1f)), groundLayer);
-        Debug.Log("ground enable = " + playerInputActions.PlayerGround.enabled);
-        Debug.Log("water enable = " + playerInputActions.PlayerWater.enabled);
-        //if (grounded == true && playerJump.swimming == false)
-        //{
-        //    inputVector = playerInputActions.PlayerGround.Movement.ReadValue<Vector2>();
-        //    playerInput.SwitchCurrentActionMap("PlayerGround");
-        //    playerInputActions.PlayerGround.Enable();
-        //    playerInputActions.PlayerWater.Disable();
-        //    playerGround.Enable();
-        //    playerWater.Disable();
+        if (jumpAction.action.ReadValue<float>() > 0 && controller2D.collisions.below)
+        {
+            timeSinceJumpPressed += Time.deltaTime;
+        }
+        else
+        {
+            timeSinceJumpPressed = 0f;
+        }
 
-        //    MoveBody(inputVector);
-        //    moving = true;
-        //    Debug.Log("Running playing");
-        //}
-        //else if (grounded == false && playerJump.swimming == true)
-        //{
-        //    inputVector = playerInputActions.PlayerWater.Swimming.ReadValue<Vector2>();
-        //    playerInput.SwitchCurrentActionMap("PlayerWater");
+        if (timeSinceJumpPressed > 0 && timeSinceJumpPressed < timeToJumpApex)
+        {
+            float t = timeSinceJumpPressed / timeToJumpApex;
+            jumpVelocity = Mathf.Lerp(jumpApexHeight, jumpCancelHeight, t);
+        }
+        else
+        {
+            jumpVelocity = jumpApexHeight;
+        }
 
-        //    playerInputActions.PlayerGround.Disable();
-        //    playerInputActions.PlayerWater.Enable();
-
-        //    playerWater.Enable();
-        //    playerGround.Disable();
-
-        //    MoveBody(inputVector);
-        //    moving = false;
-        //    Debug.Log("Running playing");
-        //}
-        //else
-        //{
-        //    moving = false;
-        //}
-        if (playerInputActions.PlayerGround.Movement.IsPressed() && playerJump.swimming == false)
+        if (controller2D.collisions.above || controller2D.collisions.below)
+        {
+            velocity.y = 0;
+        }
+        if (playerInputActions.PlayerGround.Movement.IsPressed())
         {
             playerInputActions.PlayerGround.Enable();
             playerInputActions.PlayerWater.Disable();
             inputVector = playerInputActions.PlayerGround.Movement.ReadValue<Vector2>();
-            moving = true;
-            Debug.Log("Running playing");
+            canMove = true;
+            this.transform.localScale = new Vector2(inputVector.x, 1);
         }
         else
         {
-            moving = false;
+            inputVector = playerInputActions.PlayerGround.Movement.ReadValue<Vector2>();
+            canMove = false;
         }
-        if (playerJump.swimming == true)
+
+        if (jumpAction.action.triggered)
         {
-            moving = false;
-            playerInputActions.PlayerGround.Disable();
-            playerInputActions.PlayerWater.Enable();
-            //&& playerInputActions.PlayerWater.Swimming.IsPressed()
+            if (controller2D.collisions.below)
+            {
+                velocity.y = jumpVelocity;
+                doubleJump = true;
+                jumpCanceled = false;
 
-
-            inputVector = playerInputActions.PlayerWater.Swimming.ReadValue<Vector2>();
+            }
+            else if (doubleJump && !jumpCanceled)
+            {
+                velocity.y = jumpVelocity;
+                doubleJump = false;
+                jumpCanceled = true;
+            }
         }
-
-
-        Debug.Log("Swimming playing = " + playerJump.swimming);
-
-    }
-
-    private void FixedUpdate()
-    {
-        if (moving == true || playerJump.swimming == true)
+        else
         {
-            MoveBody(inputVector);
+            jumpCanceled = true;
         }
-
-        //if (moving == true)
-        //{
-        //    rigidBody.velocity = new Vector2(direction * speed, rigidBody.velocity.y);
-        //    this.transform.localScale = new Vector2(direction * 0.65f, 0.65f);
-        //    //rigidBody.MovePosition(rigidBody.position + new Vector2(direction * speed, 0) * Time.deltaTime);
-        //}  
-    }
-    //internal void UpdateRaycastOrigins()
-    //{
-    //    Bounds bounds = base.collider2D.bounds;
-    //    bounds.Expand(skinWidth * -5);
-    //    raycastOrigings.bottomLeft = new Vector2(bounds.min.x, bounds.min.y);
-    //    raycastOrigings.bottomRight = new Vector2(bounds.max.x, bounds.min.y);
-    //}
-
-    private void OnDrawGizmos()
-    {
-        if (collider2D != null)
-        {
-            Gizmos.color = new Color(1, 0, 1, 0.5f);
-            Gizmos.DrawCube(new Vector2(collider2D.bounds.center.x, collider2D.bounds.center.y - (collider2D.bounds.extents.y + 0.005f)), new Vector2(collider2D.bounds.size.x, 0.05f));
-        }
+        float targetVelocityX = inputVector.x * moveSpeed;
+        velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, (controller2D.collisions.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
+        velocity.y += gravity * Time.deltaTime;
+        controller2D.Move(velocity * Time.deltaTime);
     }
 
-
-    private void MoveBody(Vector2 inputVector)
-    {
-
-        //this.transform.localScale = new Vector2(inputVector.x, 1);
-        rigidBody.AddForce(new Vector3(inputVector.x, inputVector.y, 0) * speed, ForceMode2D.Impulse);
-        //transform.Translate(inputVector * (Time.deltaTime * speed));
-    }
-
-    //private void LateUpdate()
-    //{
-    //    this.AnimationStateSwitch();
-    //    base.animator.SetInteger("state", (int)state);
-    //    //Debug.Log("State = " + state);
-    //}
-
-    //protected void AnimationStateSwitch()
-    //{
-
-    //    if (rigidBody.velocity.y > 1f && grounded != true)
-    //    {
-    //        this.state = PlayerState.jumping;
-    //        //Debug.Log(PlayerState.jumping + " - skachame");
-    //    }
-    //    else if (state == PlayerState.jumping && playerJump.swimming == true)
-    //    {
-    //        state = PlayerState.swimming;
-    //    }
-    //    else if (moving == true && grounded)
-    //    {
-    //        playerJump.swimming = false;
-    //        state = PlayerState.moving;
-    //    }
-
-    //    else
-    //    {
-    //        if (grounded)
-    //        {
-    //            playerJump.swimming = false;
-    //            state = PlayerState.idle;
-    //        }
-    //    }
-    //}
 }

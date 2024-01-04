@@ -917,7 +917,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 201765259}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.7046742, y: -6.48, z: -10}
+  m_LocalPosition: {x: -7.7046742, y: -4.15, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -936,13 +936,12 @@ GameObject:
   - component: {fileID: 266038761}
   - component: {fileID: 266038760}
   - component: {fileID: 266038759}
-  - component: {fileID: 266038758}
   - component: {fileID: 266038757}
-  - component: {fileID: 266038756}
-  - component: {fileID: 266038755}
+  - component: {fileID: 266038766}
   - component: {fileID: 266038762}
   - component: {fileID: 266038764}
   - component: {fileID: 266038765}
+  - component: {fileID: 266038767}
   m_Layer: 0
   m_Name: Bell
   m_TagString: Untagged
@@ -950,39 +949,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &266038755
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 266038754}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74c9a5a59de2dcf438f1181ca240cf7d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  jumpHeight: 60
-  jumpTime: 0.4
-  fallMultiplier: 12
-  jumpMultiplier: 3
---- !u!114 &266038756
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 266038754}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a82a3f09f980194882fc8a2e10b1663, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  verticalRayCount: 4
-  speed: 20
-  ground:
-    serializedVersion: 2
-    m_Bits: 64
 --- !u!114 &266038757
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1010,7 +976,7 @@ MonoBehaviour:
   m_ActionEvents:
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 266038755}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PlayerJump, Assembly-CSharp
         m_MethodName: Jump
         m_Mode: 0
@@ -1030,34 +996,13 @@ MonoBehaviour:
     m_ActionName: Player/Movement[/Keyboard/a,/Keyboard/d]
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 6ed6636b-f298-494e-aa65-6d6062045920
-    m_ActionName: Player/Swimming[/Keyboard/a,/Keyboard/d,/Keyboard/w,/Keyboard/s]
+    m_ActionId: 7cd6d755-75a1-44ef-9992-30747399a488
+    m_ActionName: PlayerWater/Swimming[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: Player
+  m_DefaultActionMap: PlayerGround
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!50 &266038758
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 266038754}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 6
-  m_LinearDrag: 6
-  m_AngularDrag: 0.05
-  m_GravityScale: 5
-  m_Material: {fileID: 0}
-  m_Interpolate: 1
-  m_SleepingMode: 1
-  m_CollisionDetection: 1
-  m_Constraints: 4
 --- !u!61 &266038759
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1144,7 +1089,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 266038754}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.7046742, y: -6.48, z: 0}
+  m_LocalPosition: {x: -7.7046742, y: -4.15, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1195,6 +1140,37 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &266038766
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 266038754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d540576405c67204b8aa1807d5b2168d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collisionMask:
+    serializedVersion: 2
+    m_Bits: 64
+  horizontalRayCount: 4
+  verticalRayCount: 4
+--- !u!114 &266038767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 266038754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a82a3f09f980194882fc8a2e10b1663, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 16
+  jumpAction: {fileID: 2947726711265497428, guid: c6c6b296bcdaae442a548e5dca17a39c, type: 3}
 --- !u!1 &270420185
 GameObject:
   m_ObjectHideFlags: 0
@@ -1273,7 +1249,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 270420185}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.7046742, y: -6.48, z: -10}
+  m_LocalPosition: {x: -7.7046742, y: -4.15, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2367,7 +2343,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 625726604}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.7046742, y: -6.48, z: -10}
+  m_LocalPosition: {x: -7.7046742, y: -4.15, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

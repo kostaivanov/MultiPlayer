@@ -5,7 +5,6 @@ using UnityEngine;
 internal class PlayerStateManager : PlayerComponents
 {
     internal PlayerMovement playerMovement;
-    internal PlayerJump playerJump;
 
     internal PlayerBaseState currentState;
     internal PlayerIdleState idleState = new PlayerIdleState();
@@ -13,17 +12,16 @@ internal class PlayerStateManager : PlayerComponents
     internal PlayerSwimmingState swimmingState = new PlayerSwimmingState();
     internal PlayerJumpingState jumpingState = new PlayerJumpingState();
     internal PlayerStoppingState stoppingState = new PlayerStoppingState();
-    internal Animation animation;
+    //internal Animation animation;
 
     // Start is called before the first frame update
     internal override void Start()
     {
         base.Start();
         //AnimationClip[] arrclip = animator.runtimeAnimatorController.animationClips;
-        animation = GetComponent<Animation>();
+        //animation = GetComponent<Animation>();
 
         playerMovement = GetComponent<PlayerMovement>();
-        playerJump = GetComponent<PlayerJump>();
 
         currentState = idleState;
 

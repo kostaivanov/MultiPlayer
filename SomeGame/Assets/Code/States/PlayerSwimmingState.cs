@@ -6,22 +6,22 @@ internal class PlayerSwimmingState : PlayerBaseState
     internal override void EnterState(PlayerStateManager player)
     {
         player.animator.Play("Swimming");
-        initialGravity = player.rigidBody.gravityScale;
-        player.rigidBody.gravityScale = 0;
+        //initialGravity = player.rigidBody.gravityScale;
+        //player.rigidBody.gravityScale = 0;
     }
 
     internal override void UpdateState(PlayerStateManager player)
     {
-        if (player.playerMovement.grounded == true && player.playerMovement.moving == true)
+        if (player.playerMovement.controller2D.collisions.below == true && player.playerMovement.inputVector.x != 0)
         {
-            player.playerJump.swimming = false;
+            player.playerMovement.swimming = false;
             player.SwitchState(player.runningState);
-            player.rigidBody.gravityScale = initialGravity;
+            //player.playerMovement.gravityScale = initialGravity;
         }
 
-        else if(player.playerMovement.grounded == true)
+        else if(player.playerMovement.controller2D.collisions.below == true)
         {
-            player.playerJump.swimming = false;
+            player.playerMovement.swimming = false;
             player.SwitchState(player.idleState);
         }
     }
